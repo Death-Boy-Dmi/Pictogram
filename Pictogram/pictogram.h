@@ -8,7 +8,7 @@
 #include <QSpinBox>
 
 #include <QPushButton>
-#include <QComboBox>
+#include <QGroupBox>
 #include <QCheckBox>
 #include <QRadioButton>
 
@@ -26,6 +26,8 @@ class Pictogram : public QWidget
 {
     Q_OBJECT
 private:
+    Pictogram* mainWindow;
+
     QVBoxLayout* mainLayout;
 
     QHBoxLayout* openFileLayout;
@@ -34,7 +36,8 @@ private:
     QPushButton* openFilePushButton;
     QFileDialog* openFileDialog;
 
-    QComboBox* settingComboBox;
+    QGroupBox* settingComboBox;
+    QVBoxLayout* settingLayout;
     QRadioButton* globMethRadioButton;
     QRadioButton* localMethRadioButton;
     QCheckBox* setFuncCheckBox;
@@ -44,6 +47,7 @@ private:
     QLabel* setMaskLabel;
     QSpinBox* setMaskSize;
 
+    QHBoxLayout* setFuncLayout;
     QLabel* funcLable;
     QLineEdit* funcLineEdit;
 
@@ -53,9 +57,11 @@ private:
     QPushButton* saveFilePushButton;
     QFileDialog* saveFileDialog;
 
+    QHBoxLayout* buttonsLauout;
     QPushButton* runPushButton;
     QPushButton* quitPushButton;
 
+    QHBoxLayout* statusLayout;
     QProgressBar* progrressBar;
     QLabel* progressLabel;
 
@@ -64,6 +70,9 @@ private:
     void setComboBox();
     void setSetting();
     void setSaveFile();
+    void setStatusBar();
+    void setMainButtons();
+    void setMainLayout();
 
 public:
     explicit Pictogram(QWidget *parent = 0);
