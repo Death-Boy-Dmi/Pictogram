@@ -38,9 +38,9 @@ FORMS += \
     form.ui
 INCLUDEPATH += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\install\include
 
-LIBS += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\bin\libopencv_core340.dll
-LIBS += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\bin\libopencv_highgui340.dll
-LIBS += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\bin\libopencv_imgcodecs340.dll
-LIBS += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\bin\libopencv_imgproc340.dll
-LIBS += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\bin\libopencv_features2d340.dll
-LIBS += C:\Users\smert\Documents\opencv-3.4.0\opencv-3.4.0\build\bin\libopencv_calib3d340.dll
+LIBS += ..\opencvdll\libopencv_core340.dll
+LIBS += ..\opencvdll\libopencv_highgui340.dll
+LIBS += ..\opencvdll\libopencv_imgcodecs340.dll
+LIBS += ..\opencvdll\libopencv_imgproc340.dll
+LIBS += ..\opencvdll\libopencv_features2d340.dll
+LIBS += ..\opencvdll\libopencv_calib3d340.dll
