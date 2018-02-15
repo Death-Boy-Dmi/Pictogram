@@ -61,7 +61,6 @@ private:
     QPushButton* runPushButton;
     QPushButton* quitPushButton;
 
-    QHBoxLayout* statusLayout;
     QProgressBar* progrressBar;
     QLabel* progressLabel;
 
@@ -70,8 +69,7 @@ private:
     void setComboBox();
     void setSetting();
     void setSaveFile();
-    void setStatusBar();
-    void setMainButtons();
+    void setProcessPart();
     void setMainLayout();
 
 public:

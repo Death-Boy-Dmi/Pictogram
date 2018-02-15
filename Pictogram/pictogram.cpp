@@ -4,14 +4,13 @@
 void Pictogram::setMainWindow()
 {
     mainWindow->setWindowTitle("Pictogram");
-    mainWindow->setGeometry(125, 100, 450, 600);
-    mainWindow->setMinimumWidth(300);
-    //mainWindow->setMaximumSize(450, 600);
+    mainWindow->setGeometry(125, 100, 400, 350);
+    mainWindow->setMinimumSize(400, 350);
+    mainWindow->setMaximumSize(900, 350);
 }
 
 void Pictogram::setOpenFile()
 {
-
     mainWindow->openFileLabel = new QLabel("Input image:");
     mainWindow->openFileLineEdit = new QLineEdit();
     mainWindow->openFilePushButton = new QPushButton("Choose...");
@@ -72,24 +71,14 @@ void Pictogram::setSaveFile()
     saveFileLayout->addWidget(saveFilePushButton, 0);
 }
 
-void Pictogram::setStatusBar()
-{
-    mainWindow->progrressBar = new QProgressBar();
-    //mainWindow->progressLabel = new QLabel("Ready");
-
-    mainWindow->statusLayout = new QHBoxLayout();
-    statusLayout->addWidget(progrressBar, 1);
-    //statusLayout->addWidget(progressLabel, 1);
-    //statusLayout->addStretch();
-}
-
-void Pictogram::setMainButtons()
+void Pictogram::setProcessPart()
 {
     mainWindow->runPushButton = new QPushButton("Run");
     mainWindow->quitPushButton = new QPushButton("Quit");
+    mainWindow->progrressBar = new QProgressBar();
 
     mainWindow->buttonsLauout = new QHBoxLayout();
-    buttonsLauout->addStretch();
+    buttonsLauout->addWidget(progrressBar, 1);
     buttonsLauout->addWidget(runPushButton, 0);
     buttonsLauout->addWidget(quitPushButton, 0);
 }
@@ -108,7 +97,6 @@ void Pictogram::setMainLayout()
     mainLayout->addStretch();
 
     mainLayout->addLayout(buttonsLauout);
-    mainLayout->addLayout(statusLayout);
 }
 
 Pictogram::Pictogram(QWidget *parent) :
@@ -121,8 +109,7 @@ Pictogram::Pictogram(QWidget *parent) :
     setComboBox();
     setSetting();
     setSaveFile();
-    setStatusBar();
-    setMainButtons();
+    setProcessPart();
     setMainLayout();
 
     mainWindow->setLayout(mainLayout);
