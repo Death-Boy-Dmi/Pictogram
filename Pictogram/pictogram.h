@@ -19,8 +19,10 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <QString>
+#include <string>
+
+#include "../Histure/histure.h"
 
 class Pictogram : public QWidget
 {
@@ -34,7 +36,6 @@ private:
     QLabel* openFileLabel;
     QLineEdit* openFileLineEdit;
     QPushButton* openFilePushButton;
-    QFileDialog* openFileDialog;
 
     QGroupBox* settingComboBox;
     QVBoxLayout* settingLayout;
@@ -55,7 +56,6 @@ private:
     QLabel* saveFileLabel;
     QLineEdit* saveFileLineEdit;
     QPushButton* saveFilePushButton;
-    QFileDialog* saveFileDialog;
 
     QHBoxLayout* buttonsLauout;
     QPushButton* runPushButton;
@@ -64,6 +64,11 @@ private:
     QProgressBar* progrressBar;
     QLabel* progressLabel;
 
+    QString inputFileQT;
+    std::string inputFileSTD;
+
+    cv::Mat inputIMG;
+
     void setMainWindow();
     void setOpenFile();
     void setComboBox();
@@ -71,6 +76,12 @@ private:
     void setSaveFile();
     void setProcessPart();
     void setMainLayout();
+
+    void setSignals();
+
+public slots:
+    void slotOpenFileButton();
+    void slotOpenFile();
 
 public:
     explicit Pictogram(QWidget *parent = 0);

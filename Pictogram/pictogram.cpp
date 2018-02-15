@@ -1,5 +1,5 @@
 #include "pictogram.h"
-#include "ui_pictogram.h"
+
 
 void Pictogram::setMainWindow()
 {
@@ -99,6 +99,50 @@ void Pictogram::setMainLayout()
     mainLayout->addLayout(buttonsLauout);
 }
 
+void Pictogram::setSignals()
+{
+    connect(openFilePushButton, SIGNAL(clicked()), mainWindow, SLOT(slotOpenFileButton()));
+    connect(openFileLineEdit, SIGNAL(editingFinished()), mainWindow, SLOT(slotOpenFile()));
+}
+
+void Pictogram::slotOpenFileButton()
+{
+    inputFileQT = QFileDialog::getOpenFileName(openFilePushButton, "Open file...", "", "*.png *.jpg");
+
+    QRegExp checkPNG("*.png");
+    QRegExp checkJPG("*.jpg");
+    checkJPG.setPatternSyntax(QRegExp::Wildcard);
+    checkPNG.setPatternSyntax(QRegExp::Wildcard);
+    if (!(checkPNG.exactMatch(inputFileQT) || checkJPG.exactMatch(inputFileQT)))
+        return;
+
+    openFileLineEdit->setText(inputFileQT);
+
+    inputFileSTD = inputFileQT.toStdString();
+    inputIMG = cv::imread(inputFileSTD, 0);
+
+    cv::namedWindow("Input File", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Input File", inputIMG);
+}
+
+void Pictogram::slotOpenFile()
+{
+    inputFileQT = openFileLineEdit->text();
+
+    QRegExp checkPNG("*.png");
+    QRegExp checkJPG("*.jpg");
+    checkJPG.setPatternSyntax(QRegExp::Wildcard);
+    checkPNG.setPatternSyntax(QRegExp::Wildcard);
+    if (!(checkPNG.exactMatch(inputFileQT) || checkJPG.exactMatch(inputFileQT)))
+        return;
+
+    inputFileSTD = inputFileQT.toStdString();
+    inputIMG = cv::imread(inputFileSTD, 0);
+
+    cv::namedWindow("Input File", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Input File", inputIMG);
+}
+
 Pictogram::Pictogram(QWidget *parent) :
     QWidget(parent)
 {
@@ -113,9 +157,45 @@ Pictogram::Pictogram(QWidget *parent) :
     setMainLayout();
 
     mainWindow->setLayout(mainLayout);
+
+    setSignals();
 }
 
 Pictogram::~Pictogram()
 {
+//    delete mainLayout;
 
+//    delete openFileLayout;
+//    delete openFileLabel;
+//    delete openFileLineEdit;
+//    delete openFilePushButton;
+//    delete openFileDialog;
+
+//    delete settingComboBox;
+//    delete settingLayout;
+//    delete globMethRadioButton;
+//    delete localMethRadioButton;
+//    delete setFuncCheckBox;
+//    delete saveCheckBox;
+
+//    delete setMaskLayout;
+//    delete setMaskLabel;
+//    delete setMaskSize;
+
+//    delete setFuncLayout;
+//    delete funcLable;
+//    delete funcLineEdit;
+
+//    delete saveFileLayout;
+//    delete saveFileLabel;
+//    delete saveFileLineEdit;
+//    delete saveFilePushButton;
+//    delete saveFileDialog;
+
+//    delete buttonsLauout;
+//    delete runPushButton;
+//    delete quitPushButton;
+
+//    delete progrressBar;
+    //delete progressLabel;
 }
