@@ -29,6 +29,7 @@ void Pictogram::setComboBox()
     mainWindow->saveCheckBox = new QCheckBox("Save output image");
 
     mainWindow->globMethRadioButton->setChecked(true);
+    mainWindow->saveCheckBox->setChecked(true);
 
     mainWindow->settingLayout = new QVBoxLayout();
     settingLayout->addWidget(globMethRadioButton);
@@ -43,7 +44,8 @@ void Pictogram::setSetting()
 {
     mainWindow->setMaskLabel = new QLabel("Set size of mask:");
     mainWindow->setMaskSize = new QSpinBox();
-    setMaskSize->setRange(3, 45);
+    setMaskSize->setEnabled(false);
+    setMaskSize->setRange(1, 45);
     setMaskSize->setSingleStep(2);
 
     mainWindow->setMaskLayout = new QHBoxLayout();
@@ -53,6 +55,7 @@ void Pictogram::setSetting()
 
     mainWindow->funcLable = new QLabel("Enter the function:");
     mainWindow->funcLineEdit = new QLineEdit("256*x");
+    funcLineEdit->setEnabled(false);
 
     mainWindow->setFuncLayout = new QHBoxLayout();
     setFuncLayout->addWidget(funcLable, 0);
@@ -74,7 +77,7 @@ void Pictogram::setSaveFile()
 void Pictogram::setProcessPart()
 {
     mainWindow->runPushButton = new QPushButton("Run");
-    mainWindow->quitPushButton = new QPushButton("Quit");
+    mainWindow->quitPushButton = new QPushButton("Exit");
     mainWindow->progrressBar = new QProgressBar();
 
     mainWindow->buttonsLauout = new QHBoxLayout();
@@ -101,8 +104,22 @@ void Pictogram::setMainLayout()
 
 void Pictogram::setSignals()
 {
+    // Open
     connect(openFilePushButton, SIGNAL(clicked()), mainWindow, SLOT(slotOpenFileButton()));
     connect(openFileLineEdit, SIGNAL(editingFinished()), mainWindow, SLOT(slotOpenFile()));
+    //Settings
+    connect(globMethRadioButton, SIGNAL(clicked()), SLOT(slotSettings()));
+    connect(localMethRadioButton, SIGNAL(clicked()), SLOT(slotSettings()));
+    connect(setFuncCheckBox, SIGNAL(clicked()), SLOT(slotSettings()));
+    connect(saveCheckBox, SIGNAL(clicked()), SLOT(slotSettings()));
+    // Save
+    connect(saveFilePushButton, SIGNAL(clicked()), mainWindow, SLOT(slotSaveFileButton()));
+    connect(saveFileLineEdit, SIGNAL(editingFinished()), mainWindow, SLOT(slotSaveFile()));
+    // RUN!!!
+    connect(runPushButton, SIGNAL(clicked()), SLOT(slotRun()));
+    // Exit
+    connect(quitPushButton, SIGNAL(clicked()), mainWindow, SLOT(close()));
+
 }
 
 void Pictogram::slotOpenFileButton()
@@ -142,6 +159,96 @@ void Pictogram::slotOpenFile()
     cv::namedWindow("Input File", cv::WINDOW_AUTOSIZE);
     cv::imshow("Input File", inputIMG);
 }
+
+void Pictogram::slotSettings()
+{
+    if (globMethRadioButton->isChecked()) {
+        setMaskSize->setEnabled(false);
+        setMaskSize->setValue(1);
+    } else if (localMethRadioButton->isChecked()) {
+        setMaskSize->setEnabled(true);
+        setMaskSize->setValue(5);
+    }
+
+    if (setFuncCheckBox->isChecked()) {
+        funcLineEdit->setEnabled(true);
+    } else {
+        funcLineEdit->setEnabled(false);
+    }
+
+    if (saveCheckBox->isChecked()) {
+        saveFileLineEdit->setEnabled(true);
+        saveFilePushButton->setEnabled(true);
+    } else {
+        saveFileLineEdit->setEnabled(false);
+        saveFilePushButton->setEnabled(false);
+    }
+
+}
+
+void Pictogram::slotSaveFileButton()
+{
+    outputFileQT = QFileDialog::getSaveFileName(saveFilePushButton, "Save file...", "", "*.png ;; *.jpg");
+
+    QRegExp checkPNG("*.png");
+    QRegExp checkJPG("*.jpg");
+    checkJPG.setPatternSyntax(QRegExp::Wildcard);
+    checkPNG.setPatternSyntax(QRegExp::Wildcard);
+    if (!(checkPNG.exactMatch(outputFileQT) || checkJPG.exactMatch(outputFileQT)))
+        return;
+
+    saveFileLineEdit->setText(outputFileQT);
+
+    outputFileSTD = outputFileQT.toStdString();
+}
+
+void Pictogram::slotSaveFile()
+{
+    outputFileQT = saveFileLineEdit->text();
+
+    QRegExp checkPNG("*.png");
+    QRegExp checkJPG("*.jpg");
+    checkJPG.setPatternSyntax(QRegExp::Wildcard);
+    checkPNG.setPatternSyntax(QRegExp::Wildcard);
+    if (!(checkPNG.exactMatch(outputFileQT) || checkJPG.exactMatch(outputFileQT)))
+        return;
+
+    saveFileLineEdit->setText(outputFileQT);
+
+    outputFileSTD = outputFileQT.toStdString();
+}
+
+void Pictogram::slotRun()
+{
+    std::string func = "";
+    size_t mask_size = 1;
+    ImageChange::Histure* changeImg;
+
+    if (setFuncCheckBox->isChecked()) {
+        QString funcQT= funcLineEdit->text();
+        func = funcQT.toStdString();
+    }
+    if (globMethRadioButton->isChecked()) {
+        ImageChange::Histure global_func(inputIMG, func);
+        changeImg = &global_func;
+    }
+    if (localMethRadioButton->isChecked()) {
+        mask_size = (size_t)setMaskSize->value();
+        ImageChange::LocalHisture local_func(inputIMG, func, mask_size);
+        changeImg = &local_func;
+    }
+
+    changeImg->RewritePicture();
+    outputIMG = changeImg->GetPicture();
+
+    cv::namedWindow("Output File", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Output File", outputIMG);
+
+    if (saveFilePushButton->isChecked()) {
+        cv::imwrite(outputFileSTD, outputIMG);
+    }
+}
+
 
 Pictogram::Pictogram(QWidget *parent) :
     QWidget(parent)
@@ -197,5 +304,5 @@ Pictogram::~Pictogram()
 //    delete quitPushButton;
 
 //    delete progrressBar;
-    //delete progressLabel;
+//    delete progressLabel;
 }

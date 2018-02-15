@@ -67,7 +67,11 @@ private:
     QString inputFileQT;
     std::string inputFileSTD;
 
+    QString outputFileQT;
+    std::string outputFileSTD;
+
     cv::Mat inputIMG;
+    cv::Mat outputIMG;
 
     void setMainWindow();
     void setOpenFile();
@@ -82,6 +86,10 @@ private:
 public slots:
     void slotOpenFileButton();
     void slotOpenFile();
+    void slotSettings();
+    void slotSaveFileButton();
+    void slotSaveFile();
+    void slotRun();
 
 public:
     explicit Pictogram(QWidget *parent = 0);
