@@ -90,6 +90,7 @@ void Histure::RewritePicture()
             for (size_t col = 0; col < height; ++col) {
                 pict.at<uchar>(row, col) = BYTE * equHistogram[pict.at<uchar>(row, col)];
             }
+            process->setValue(++counter);
         }
     } else {
         ToFunction function(func);
@@ -98,6 +99,7 @@ void Histure::RewritePicture()
                     double x = equHistogram[pict.at<uchar>(row, col)];
                     pict.at<uchar>(row, col) = (uchar)function.Calculate(x);
                 }
+                process->setValue(++counter);
         }
     }
     EstablishHistogram();
@@ -110,6 +112,12 @@ double* Histure::GetCurrentHisogram()
 double* Histure::GetNewHistogram()
 {
     return this->equHistogram;
+}
+
+void Histure::SetProgressBar(QProgressBar *prbar)
+{
+    process = prbar;
+    counter = 0;
 }
 
 
@@ -187,6 +195,7 @@ void LocalHisture::RewritePicture()
 					}
 				}
             }
+            process->setValue(++counter);
         }
     } else {
         ToFunction function(func);
@@ -198,8 +207,9 @@ void LocalHisture::RewritePicture()
 						double x = equHistogram[pict.at<uchar>(i, j)];
 						img.at<uchar>(i, j) = (uchar)function.Calculate(x);
 					}
-				}
+                }
             }
+            process->setValue(++counter);
         }
     }
 

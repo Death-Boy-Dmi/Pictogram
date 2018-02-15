@@ -5,6 +5,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/opencv.hpp>
 
+#include <QProgressBar>
+
 #include "../ToFunction/tofunction.h"
 
 namespace ImageChange {
@@ -22,6 +24,9 @@ protected:
     std::string func;
 	double currentHistogram[BYTE];
 	double equHistogram[BYTE];
+
+    QProgressBar* process;
+    size_t counter;
 private:
     double* EqualHistogram();
 	double* EstablishHistogram();
@@ -41,6 +46,7 @@ public:
 	double* GetCurrentHisogram();
     double* GetNewHistogram();
 
+    void SetProgressBar(QProgressBar* prbar);
 };
 
 class LocalHisture : public Histure

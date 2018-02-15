@@ -31,7 +31,7 @@ void Pictogram::setComboBox()
     mainWindow->saveCheckBox = new QCheckBox("Save output image");
 
     mainWindow->globMethRadioButton->setChecked(true);
-    mainWindow->saveCheckBox->setChecked(true);
+    mainWindow->saveCheckBox->setChecked(false);
 
     mainWindow->settingLayout = new QVBoxLayout();
     settingLayout->addWidget(globMethRadioButton);
@@ -71,6 +71,9 @@ void Pictogram::setSaveFile()
     mainWindow->saveFileLineEdit = new QLineEdit();
     mainWindow->saveFilePushButton = new QPushButton("Choose...");
 
+    saveFileLineEdit->setEnabled(false);
+    saveFilePushButton->setEnabled(false);
+
     mainWindow->saveFileLayout = new QHBoxLayout();
     saveFileLayout->addWidget(saveFileLineEdit, 2);
     saveFileLayout->addWidget(saveFilePushButton, 0);
@@ -80,10 +83,10 @@ void Pictogram::setProcessPart()
 {
     mainWindow->runPushButton = new QPushButton("Run");
     mainWindow->quitPushButton = new QPushButton("Exit");
-    mainWindow->progrressBar = new QProgressBar();
+    mainWindow->progressBar = new QProgressBar();
 
     mainWindow->buttonsLauout = new QHBoxLayout();
-    buttonsLauout->addWidget(progrressBar, 1);
+    buttonsLauout->addWidget(progressBar, 1);
     buttonsLauout->addWidget(runPushButton, 0);
     buttonsLauout->addWidget(quitPushButton, 0);
 }
@@ -222,6 +225,8 @@ void Pictogram::slotSaveFile()
 
 void Pictogram::slotRun()
 {
+    progressBar->reset();
+
     std::string func = "";
     size_t mask_size = 1;
     ImageChange::Histure* changeImg;
@@ -236,13 +241,17 @@ void Pictogram::slotRun()
 
     if (globMethRadioButton->isChecked()) {
         changeImg = &global_func;
+        progressBar->setRange(0, inputIMG.rows - 1);
+
     }
     if (localMethRadioButton->isChecked()) {
         mask_size = (size_t)setMaskSize->value();
         local_func.SetMask(mask_size);
         changeImg = &local_func;
-    }
+        progressBar->setRange(0, inputIMG.rows - mask_size - 1);
 
+    }
+    changeImg->SetProgressBar(progressBar);
     changeImg->RewritePicture();
     outputIMG = changeImg->GetPicture();
 

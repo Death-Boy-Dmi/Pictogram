@@ -61,7 +61,7 @@ private:
     QPushButton* runPushButton;
     QPushButton* quitPushButton;
 
-    QProgressBar* progrressBar;
+    QProgressBar* progressBar;
     QLabel* progressLabel;
 
     QString inputFileQT;
