@@ -1,8 +1,8 @@
 #ifndef HISTURE_H
 #define HISTURE_H
 
-#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv2/opencv.hpp>
 
 #include "../ToFunction/tofunction.h"
@@ -20,11 +20,11 @@ protected:
     size_t widht;
     size_t height;
     std::string func;
-    uchar currentHistogram[BYTE];
-    uchar equHistogram[BYTE];
+	double currentHistogram[BYTE];
+	double equHistogram[BYTE];
 private:
-    uchar* EqualHistogram();
-    uchar* EstablishHistogram();
+    double* EqualHistogram();
+	double* EstablishHistogram();
 public:
     Histure() {}
     Histure(cv::Mat img);
@@ -38,8 +38,8 @@ public:
     cv::Mat GetPicture();
     virtual void RewritePicture();
 
-    uchar* GetCurrentHisogram();
-    uchar* GetNewHistogram();
+	double* GetCurrentHisogram();
+    double* GetNewHistogram();
 
 };
 
@@ -47,8 +47,8 @@ class LocalHisture : public Histure
 {
 private:
     size_t maskSize;
-    uchar* EqualHistogram(size_t currentRow, size_t currentCol);
-    uchar* EstablishHistogram(size_t currentRow, size_t currentCol);
+    double* EqualHistogram(size_t currentRow, size_t currentCol);
+	double* EstablishHistogram(size_t currentRow, size_t currentCol);
 public:
     LocalHisture() : Histure() {    }
     LocalHisture(cv::Mat img, size_t mask);

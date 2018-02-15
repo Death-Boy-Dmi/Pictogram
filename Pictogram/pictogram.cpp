@@ -18,6 +18,8 @@ void Pictogram::setOpenFile()
     mainWindow->openFileLayout = new QHBoxLayout();
     openFileLayout->addWidget(openFileLineEdit, 2);
     openFileLayout->addWidget(openFilePushButton, 0);
+
+    openFileLineEdit->setText("D:/Users/smert/Libs/Docs/Histogram/test_img/bird.png");
 }
 
 void Pictogram::setComboBox()
@@ -228,13 +230,16 @@ void Pictogram::slotRun()
         QString funcQT= funcLineEdit->text();
         func = funcQT.toStdString();
     }
+
+    ImageChange::Histure global_func(inputIMG, func);
+    ImageChange::LocalHisture local_func(inputIMG, func, mask_size);
+
     if (globMethRadioButton->isChecked()) {
-        ImageChange::Histure global_func(inputIMG, func);
         changeImg = &global_func;
     }
     if (localMethRadioButton->isChecked()) {
         mask_size = (size_t)setMaskSize->value();
-        ImageChange::LocalHisture local_func(inputIMG, func, mask_size);
+        local_func.SetMask(mask_size);
         changeImg = &local_func;
     }
 
@@ -244,7 +249,7 @@ void Pictogram::slotRun()
     cv::namedWindow("Output File", cv::WINDOW_AUTOSIZE);
     cv::imshow("Output File", outputIMG);
 
-    if (saveFilePushButton->isChecked()) {
+    if (saveCheckBox->isChecked()) {
         cv::imwrite(outputFileSTD, outputIMG);
     }
 }
