@@ -45,7 +45,7 @@ void Pictogram::setSetting()
     mainWindow->setMaskLabel = new QLabel("Set size of mask:");
     mainWindow->setMaskSize = new QSpinBox();
     setMaskSize->setEnabled(false);
-    setMaskSize->setRange(1, 255);
+    setMaskSize->setRange(1, 5);
     setMaskSize->setSingleStep(2);
 
     mainWindow->setMaskLayout = new QHBoxLayout();
@@ -150,6 +150,9 @@ void Pictogram::slotOpenFileButton()
     openFileLineEdit->setText(inputFileQT);
     inputFileSTD = inputFileQT.toStdString();
     inputIMG = cv::imread(inputFileSTD, 0);
+    sizeImg = (inputIMG.rows < inputIMG.cols) ? inputIMG.rows : inputIMG.cols;
+
+    setMaskSize->setRange(1, sizeImg);
 
     cv::namedWindow("Input File", cv::WINDOW_NORMAL);
     cv::imshow("Input File", inputIMG);
@@ -173,6 +176,9 @@ void Pictogram::slotOpenFile()
 
     inputFileSTD = inputFileQT.toStdString();
     inputIMG = cv::imread(inputFileSTD, 0);
+    sizeImg = (inputIMG.rows < inputIMG.cols) ? inputIMG.rows : inputIMG.cols;
+
+    setMaskSize->setRange(1, sizeImg);
 
     cv::namedWindow("Input File", cv::WINDOW_NORMAL);
     cv::imshow("Input File", inputIMG);
@@ -290,7 +296,7 @@ Pictogram::Pictogram(QWidget *parent) :
     setMainLayout();
 
     mainWindow->setLayout(mainLayout);
-
+    sizeImg = 0;
     setSignals();
 }
 

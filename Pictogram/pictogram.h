@@ -73,6 +73,7 @@ private:
 
     cv::Mat inputIMG;
     cv::Mat outputIMG;
+    size_t sizeImg;
 
     void setMainWindow();
     void setOpenFile();
