@@ -65,6 +65,7 @@ private:
     QLabel* progressLabel;
 
     QString inputFileQT;
+    QString oldStr;
     std::string inputFileSTD;
 
     QString outputFileQT;
@@ -82,7 +83,7 @@ private:
     void setMainLayout();
 
     void setSignals();
-
+    void closeEvent(QCloseEvent *event);
 public slots:
     void slotOpenFileButton();
     void slotOpenFile();

@@ -18,8 +18,6 @@ void Pictogram::setOpenFile()
     mainWindow->openFileLayout = new QHBoxLayout();
     openFileLayout->addWidget(openFileLineEdit, 2);
     openFileLayout->addWidget(openFilePushButton, 0);
-
-    openFileLineEdit->setText("D:/Users/smert/Libs/Docs/Histogram/test_img/bird.png");
 }
 
 void Pictogram::setComboBox()
@@ -47,7 +45,7 @@ void Pictogram::setSetting()
     mainWindow->setMaskLabel = new QLabel("Set size of mask:");
     mainWindow->setMaskSize = new QSpinBox();
     setMaskSize->setEnabled(false);
-    setMaskSize->setRange(1, 45);
+    setMaskSize->setRange(1, 255);
     setMaskSize->setSingleStep(2);
 
     mainWindow->setMaskLayout = new QHBoxLayout();
@@ -82,6 +80,7 @@ void Pictogram::setSaveFile()
 void Pictogram::setProcessPart()
 {
     mainWindow->runPushButton = new QPushButton("Run");
+    runPushButton->setDefault(true);
     mainWindow->quitPushButton = new QPushButton("Exit");
     mainWindow->progressBar = new QProgressBar();
 
@@ -123,45 +122,59 @@ void Pictogram::setSignals()
     // RUN!!!
     connect(runPushButton, SIGNAL(clicked()), SLOT(slotRun()));
     // Exit
-    connect(quitPushButton, SIGNAL(clicked()), mainWindow, SLOT(close()));
+    connect(quitPushButton, SIGNAL(clicked()), mainWindow ,SLOT(close()));
 
+}
+
+void Pictogram::closeEvent(QCloseEvent *event)
+{
+    cv::destroyAllWindows();
+    mainWindow->close();
 }
 
 void Pictogram::slotOpenFileButton()
 {
+    oldStr = inputFileQT;
     inputFileQT = QFileDialog::getOpenFileName(openFilePushButton, "Open file...", "", "*.png *.jpg");
 
     QRegExp checkPNG("*.png");
     QRegExp checkJPG("*.jpg");
     checkJPG.setPatternSyntax(QRegExp::Wildcard);
     checkPNG.setPatternSyntax(QRegExp::Wildcard);
-    if (!(checkPNG.exactMatch(inputFileQT) || checkJPG.exactMatch(inputFileQT)))
+    if (!(checkPNG.exactMatch(inputFileQT) || checkJPG.exactMatch(inputFileQT))) {
         return;
-
+    }
+    if (oldStr == inputFileQT) {
+        return;
+    }
     openFileLineEdit->setText(inputFileQT);
-
     inputFileSTD = inputFileQT.toStdString();
     inputIMG = cv::imread(inputFileSTD, 0);
 
-    cv::namedWindow("Input File", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Input File", cv::WINDOW_NORMAL);
     cv::imshow("Input File", inputIMG);
 }
 
 void Pictogram::slotOpenFile()
 {
+    oldStr = inputFileQT;
     inputFileQT = openFileLineEdit->text();
 
     QRegExp checkPNG("*.png");
     QRegExp checkJPG("*.jpg");
     checkJPG.setPatternSyntax(QRegExp::Wildcard);
     checkPNG.setPatternSyntax(QRegExp::Wildcard);
-    if (!(checkPNG.exactMatch(inputFileQT) || checkJPG.exactMatch(inputFileQT)))
+    if (!(checkPNG.exactMatch(inputFileQT) || checkJPG.exactMatch(inputFileQT))) {
         return;
+    }
+    if (oldStr == inputFileQT) {
+        return;
+    }
 
     inputFileSTD = inputFileQT.toStdString();
     inputIMG = cv::imread(inputFileSTD, 0);
 
-    cv::namedWindow("Input File", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Input File", cv::WINDOW_NORMAL);
     cv::imshow("Input File", inputIMG);
 }
 
@@ -255,14 +268,13 @@ void Pictogram::slotRun()
     changeImg->RewritePicture();
     outputIMG = changeImg->GetPicture();
 
-    cv::namedWindow("Output File", cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Output File", cv::WINDOW_NORMAL);
     cv::imshow("Output File", outputIMG);
 
     if (saveCheckBox->isChecked()) {
         cv::imwrite(outputFileSTD, outputIMG);
     }
 }
-
 
 Pictogram::Pictogram(QWidget *parent) :
     QWidget(parent)
@@ -284,6 +296,7 @@ Pictogram::Pictogram(QWidget *parent) :
 
 Pictogram::~Pictogram()
 {
+    cv::destroyAllWindows();
 //    delete mainLayout;
 
 //    delete openFileLayout;
