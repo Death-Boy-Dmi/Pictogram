@@ -184,7 +184,7 @@ size_t LocalHisture::GetMask()
 
 void LocalHisture::RewritePicture()
 {
-    cv::Mat img = cv::Mat::zeros(pict.size(), CV_8U);
+    cv::Mat img = cv::Mat::zeros(pict.size(), CV_8UC1);
     if (func == "") {
         for (size_t row = maskSize / 2; row < widht - maskSize / 2; ++row) {
             for (size_t col = maskSize / 2; col < height - maskSize / 2; ++col) {
@@ -223,12 +223,12 @@ void LocalHisture::RewritePicture()
 double* LocalHisture::EqualHistogram(size_t i, size_t j)
 {
     EstablishHistogram(i, j);
-    for (size_t k = 0; k < BYTE; ++k) {
-        equHistogram[k] = 0;
+    for (size_t i = 0; i < BYTE; ++i) {
+        equHistogram[i] = 0;
     }
     for (size_t currentValue = 0; currentValue < BYTE; ++currentValue) {
-        for (size_t k = 0; k < currentValue; ++k) {
-            equHistogram[currentValue] += currentHistogram[k] / (maskSize*maskSize);
+        for (size_t i = 0; i < currentValue; ++i) {
+            equHistogram[currentValue] += currentHistogram[i] / (maskSize * maskSize);
         }
     }
     return equHistogram;
@@ -236,17 +236,26 @@ double* LocalHisture::EqualHistogram(size_t i, size_t j)
 
 double* LocalHisture::EstablishHistogram(size_t i, size_t j)
 {
-    if (j == maskSize / 2) {
-        for (size_t row = i - maskSize / 2; row < i + maskSize / 2; ++row) {
-            for (size_t col = j - maskSize / 2; col < j + maskSize / 2; ++col) {
-                currentHistogram[pict.at<uchar>(row, col)] += 1;
-            }
-        }
-    } else {
-        for (size_t row = i - maskSize / 2; row < i + maskSize / 2; ++row) {
-            currentHistogram[pict.at<uchar>(row, j - (maskSize / 2 + 1))] -= 1;
-            currentHistogram[pict.at<uchar>(row, j + maskSize / 2)] += 1;
+    for (size_t k = 0; k < BYTE; ++k) {
+        currentHistogram[k] = 0;
+    }
+
+    for (size_t row = i - maskSize / 2; row < i + maskSize / 2; ++row) {
+        for (size_t col = j - maskSize / 2; col < j + maskSize / 2; ++col) {
+            currentHistogram[pict.at<uchar>(row, col)] += 1;
         }
     }
+//    if (j == maskSize / 2) {
+//        for (size_t row = i - maskSize / 2; row < i + maskSize / 2; ++row) {
+//            for (size_t col = j - maskSize / 2; col < j + maskSize / 2; ++col) {
+//                currentHistogram[pict.at<uchar>(row, col)] += 1;
+//            }
+//        }
+//    } else {
+//        for (size_t row = i - maskSize / 2; row < i + maskSize / 2; ++row) {
+//            currentHistogram[pict.at<uchar>(row, j - (maskSize / 2 + 1))] -= 1;
+//            currentHistogram[pict.at<uchar>(row, j + maskSize / 2)] += 1;
+//        }
+//    }
     return currentHistogram;
 }
