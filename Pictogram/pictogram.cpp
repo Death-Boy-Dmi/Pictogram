@@ -153,7 +153,7 @@ void Pictogram::slotOpenFileButton()
     sizeImg = (inputIMG.rows < inputIMG.cols) ? inputIMG.rows : inputIMG.cols;
 
     setMaskSize->setRange(1, sizeImg);
-
+    cv::destroyAllWindows();
     cv::namedWindow("Input File", cv::WINDOW_NORMAL);
     cv::imshow("Input File", inputIMG);
 }
@@ -180,6 +180,7 @@ void Pictogram::slotOpenFile()
 
     setMaskSize->setRange(1, sizeImg);
 
+    cv::destroyAllWindows();
     cv::namedWindow("Input File", cv::WINDOW_NORMAL);
     cv::imshow("Input File", inputIMG);
 }
@@ -250,9 +251,12 @@ void Pictogram::slotRun()
     size_t mask_size = 1;
     ImageChange::Histure* changeImg;
 
+    std::string nameWindow = "Output image: ";
+
     if (setFuncCheckBox->isChecked()) {
         QString funcQT= funcLineEdit->text();
         func = funcQT.toStdString();
+        nameWindow += func;
     }
 
     ImageChange::Histure global_func(inputIMG, func);
@@ -261,21 +265,24 @@ void Pictogram::slotRun()
     if (globMethRadioButton->isChecked()) {
         changeImg = &global_func;
         progressBar->setRange(0, inputIMG.rows - 1);
-
+        nameWindow += "global ";
     }
     if (localMethRadioButton->isChecked()) {
         mask_size = (size_t)setMaskSize->value();
         local_func.SetMask(mask_size);
         changeImg = &local_func;
         progressBar->setRange(0, inputIMG.rows - mask_size - 1);
+        nameWindow += "local ";
+        std::string maskSizeStr = std::to_string(mask_size);
+        nameWindow += maskSizeStr;
 
     }
     changeImg->SetProgressBar(progressBar);
     changeImg->RewritePicture();
     outputIMG = changeImg->GetPicture();
 
-    cv::namedWindow("Output File", cv::WINDOW_NORMAL);
-    cv::imshow("Output File", outputIMG);
+    cv::namedWindow(nameWindow, cv::WINDOW_NORMAL);
+    cv::imshow(nameWindow, outputIMG);
 
     if (saveCheckBox->isChecked()) {
         cv::imwrite(outputFileSTD, outputIMG);
